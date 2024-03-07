@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react'
 import { useHistory } from "react-router";
 import { CurrentUser } from './contexts/CurrentUser';
+import Logout from './users/LogOut';
 
 function Navigation() {
 
@@ -25,9 +26,12 @@ function Navigation() {
 
     if (currentUser) {
         loginActions = (
+            
             <li style={{ float: 'right' }}>
                 Logged in as {currentUser.firstName} {currentUser.lastName}
+                <button className="btn btn-danger" onClick={() => history.push("/logout")} >Logout</button>
             </li>
+            
         )
     }
 
