@@ -5,6 +5,9 @@ const jwt = require('json-web-token')
 const { Place, Comment, User } = db
 
 router.post('/', async (req, res) => {
+    if (req.currentUser?.role !== 'admin'){
+        return res.status(403).json({message: 'You are not allowed to add a place'})
+    }
     if (!req.body.pic) {
         req.body.pic = 'http://placekitten.com/400/400'
     }
@@ -46,6 +49,9 @@ router.get('/:placeId', async (req, res) => {
 })
 
 router.put('/:placeId', async (req, res) => {
+    if (req.currentUser?.role !== 'admin'){
+        return res.status(403).json({message: 'You are not allowed to edit places'})
+    }
     let placeId = Number(req.params.placeId)
     if (isNaN(placeId)) {
         res.status(404).json({ message: `Invalid id "${placeId}"` })
@@ -95,43 +101,6 @@ router.post('/:placeId/comments', async (req, res) => {
         res.status(404).json({ message: `Could not find place with id "${placeId}"` })
     }
 
-    // const author = await User.findOne({
-    //     where: { userId: req.body.authorId }
-    // })
-
-    // let currentUser;
-
-    // try {
-    //     const [method, token] = req.headers.authorization.split(' ');
-    //     if (method === 'Bearer') {
-    //         const result = await jwt.decode(process.env.JWT_SECRET, token);
-    //         console.log('Decoded token:', result); // Log the decoded token
-    //         const { id } = result.value;
-    //         currentUser = await User.findOne({
-    //             where: {
-    //                 userId: id
-    //             }
-    //         });
-    //         console.log('Current user:', currentUser); // Log the retrieved user
-    //         if (!currentUser) {
-    //             // If the user with the decoded ID is not found, send an unauthorized response
-    //             console.log('User not found.');
-    //             res.status(401).json({ message: 'Invalid or expired token' });
-    //             return; // Exit the function to prevent further execution
-    //         }
-    //     }
-    // } catch (err) {
-    //     // If an error occurs during authentication, send an unauthorized response
-    //     console.error('Authentication error:', err);
-    //     res.status(401).json({ message: 'Invalid or missing authentication token' });
-    //     return; // Exit the function to prevent further execution
-    // }
-    
-
-    // if (!author) {
-    //     res.status(404).json({ message: `Could not find author with id "${req.body.authorId}"` })
-    // }
-
     if (!req.currentUser) {
         res.status(404).json({ message: `You must be logged in to leave a comment` })
     }
@@ -150,6 +119,9 @@ router.post('/:placeId/comments', async (req, res) => {
 })
 
 router.delete('/:placeId/comments/:commentId', async (req, res) => {
+    if (req.currentUser?.role !== 'admin'){
+        return res.status(403).json({message: 'You are not allowed to delete places'})
+    }
     let placeId = Number(req.params.placeId)
     let commentId = Number(req.params.commentId)
 
