@@ -27,6 +27,8 @@ function Navigation() {
         loginActions = (
             <li style={{ float: 'right' }}>
                 Logged in as {currentUser.firstName} {currentUser.lastName}
+                <br/>
+                <button onClick={() => history.push("/logout")}>Logout</button>
             </li>
         )
     }
